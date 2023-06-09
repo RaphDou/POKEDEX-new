@@ -1,5 +1,6 @@
 "use client";
 
+
 import { PokemonListAPI } from "@/types/pokemon-api";
 import {
   Box,
@@ -11,16 +12,20 @@ import {
 import { useEffect, useState } from "react";
 import PokemonCard from "../pokemon-card/pokemon-card";
 import { getData } from "@/api/pokemon-api";
+import styles from "@/app/page.module.css";
+
+const { paginationContainer } = styles;
 
 interface PokemonListProps {
   data: PokemonListAPI;
 }
 
+
 export default function PokemonList(props: PokemonListProps) {
   const [pokemonList, setPokemonList] = useState<PokemonListAPI>(props.data);
   const [loading, setLoading] = useState<boolean>(true);
   const [totalPages, setTotalPages] = useState<number>(
-    Math.ceil(props.data.count ? props.data.count / 8 : 1)
+    Math.ceil(props.data.count ? props.data.count / 16 : 1)
   );
   const [currentPage, setCurrentPage] = useState<number>(1);
 
@@ -28,7 +33,20 @@ export default function PokemonList(props: PokemonListProps) {
     if (props.data) {
       setLoading(false);
     }
+
+    const storedPage = localStorage.getItem("currentPage");
+    if (storedPage) {
+      setCurrentPage(parseInt(storedPage));
+    } else {
+      setCurrentPage(1);
+    }
   }, [props.data]);
+
+  useEffect(() => {
+    const offset = (currentPage - 1) * 16;
+    getApiData(`https://pokeapi.co/api/v2/pokemon?limit=16&offset=${offset}`);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [currentPage]);
 
   function getApiData(url: string) {
     setLoading(true);
@@ -41,6 +59,11 @@ export default function PokemonList(props: PokemonListProps) {
         setLoading(false);
       });
   }
+
+  const handlePageChange = (_e: React.ChangeEvent<unknown>, page: number) => {
+    setCurrentPage(page);
+    localStorage.setItem("currentPage", page.toString());
+  };
 
   return (
     <Container fixed>
@@ -60,19 +83,14 @@ export default function PokemonList(props: PokemonListProps) {
             </Grid>
           </Box>
           <Box sx={{ mt: 2 }}>
-            <Pagination
-              count={totalPages}
-              color="primary"
-              page={currentPage}
-              onChange={(_e, page) => {
-                const offset = (page - 1) * 8;
-                setCurrentPage(page);
-
-                getApiData(
-                  `https://pokeapi.co/api/v2/pokemon?limit=8&offset=${offset}`
-                );
-              }}
-            />
+            <div className={paginationContainer}>
+              <Pagination
+                count={totalPages}
+                color="primary"
+                page={currentPage}
+                onChange={handlePageChange}
+              />
+            </div>
           </Box>
         </>
       )}
