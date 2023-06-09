@@ -11,3 +11,7 @@ a {
   justify-content: center;
   margin-top: 20px; /* Ajustez la marge supérieure selon vos besoins */
 }
+
+.test {
+  display:flex;
+}
