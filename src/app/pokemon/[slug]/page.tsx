@@ -12,6 +12,7 @@ import {
   Paper,
 } from "@mui/material";
 import Link from "next/link";
+import "./pokemonPage.css"; 
 
 interface Pokemon {
   id: number;
@@ -35,6 +36,7 @@ interface Pokemon {
     name: string;
   };
   sprites: {
+    other: any;
     front_default: string;
   };
   types: {
@@ -62,6 +64,54 @@ interface EvolutionChain {
     evolves_to: EvolutionChain[];
   };
 }
+const getBackgroundColorClass = (pokemon: Pokemon): string => {
+  if (pokemon && pokemon.types.length > 0) {
+    const type = pokemon.types[0].type.name; 
+    switch (type) {
+      case 'fire':
+        return 'fire-background'; 
+      case 'water':
+        return 'water-background';
+        case 'grass': 
+        return 'grass-background'; 
+        case 'normal': 
+        return 'normal-background';
+        case 'fighting': 
+        return 'fighting-background'; 
+        case 'electric': 
+        return 'electric-background'; 
+        case 'ice': 
+        return 'ice-background'; 
+        case 'poison': 
+        return 'poison-background'; 
+        case 'ghost': 
+        return 'ghost-background'; 
+        case 'ground': 
+        return 'ground-background'; 
+        case 'flying': 
+        return 'flying-background'; 
+        case 'psychic': 
+        return 'psychic-background'; 
+        case 'dragon': 
+        return 'dragon-background'; 
+        case 'bug': 
+        return 'bug-background'; 
+        case 'dark': 
+        return 'dark-background'; 
+        case 'rock': 
+        return 'rock-background'; 
+        case 'steel': 
+        return 'steel-background';
+        case 'fairy': 
+        return 'fairy-background';  
+        
+      default:
+        return 'default-background'; 
+    }
+  }
+
+  return 'default-background'; // default background c'est s'il ne trouve pas de type
+};
 
 const PokemonPage = () => {
   const [pokemon, setPokemon] = useState<Pokemon | null>(null);
@@ -69,7 +119,8 @@ const PokemonPage = () => {
     null
   );
   const [selectedTab, setSelectedTab] = useState<number>(0);
-
+  const [backgroundClass, setBackgroundClass] = useState<string>("default-background");
+  
   useEffect(() => {
     const fetchPokemon = async () => {
       try {
@@ -91,11 +142,13 @@ const PokemonPage = () => {
         );
         const evolutionChainData = await evolutionChainResponse.json();
         setEvolutionChain(evolutionChainData);
+        setBackgroundClass(getBackgroundColorClass(data)); // Mise à jour de la classe CSS du fond en fonction du type de Pokémon
       } catch (error) {
         console.log(error);
       }
     };
 
+    
     fetchPokemon();
   }, []);
 
@@ -108,44 +161,45 @@ const PokemonPage = () => {
       switch (selectedTab) {
         case 0:
           return (
-            <div>
+            <Box>
               {evolutionChain && renderEvolutionChain(evolutionChain)}
-            </div>
+              </Box>
           );
         case 1:
           return (
-            <div>
+            <Box>
               {/* Afficher les informations générales sur le Pokémon ici */}
-              <Typography variant="body1">
+              <Typography variant="h4">
                 Species: {pokemon.species.name}
               </Typography>
-            </div>
+              <Typography variant="h4" component="ul" style={{ listStyleType: "none" }}></Typography>
+            </Box>
           );
         case 2:
           return (
-            <div>
+            <Box>
               {/* Afficher les mouvements du Pokémon ici */}
-              <Typography variant="body1">Moves:</Typography>
+              <Typography variant="h4">Moves:</Typography>
               <ul>
                 {pokemon.moves.map((move) => (
                   <li key={move.move.name}>{move.move.name}</li>
                 ))}
               </ul>
-            </div>
+            </Box>
           );
         case 3:
           return (
-            <div>
+            <Box>
               {/* Afficher les caractéristiques du Pokémon ici */}
-              <Typography variant="body1">Height: {pokemon.height}</Typography>
-              <Typography variant="body1">Weight: {pokemon.weight}</Typography>
-              <Typography variant="body1">Abilities:</Typography>
-              <ul>
+              <Typography variant="h4">Height: {pokemon.height}</Typography>
+              <Typography variant="h4">Weight: {pokemon.weight}</Typography>
+              <Typography variant="h4">Abilities:</Typography>
+              
                 {pokemon.abilities.map((ability) => (
                   <li key={ability.ability.name}>{ability.ability.name}</li>
                 ))}
-              </ul>
-            </div>
+            
+            </Box>
           );
         default:
           return null;
@@ -162,13 +216,13 @@ const PokemonPage = () => {
         const imageUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonId}.png`;
 
         return (
-          <li key={evolution.species.name}>
+           <div key={evolution.species.name}>
             <img src={imageUrl} alt={evolution.species.name} />
             {evolution.species.name}
             {evolution.evolves_to.length > 0 && (
-              <ul>{evolution.evolves_to.map(renderEvolution)}</ul>
+             <div> {evolution.evolves_to.map(renderEvolution)}</div>
             )}
-          </li>
+          </div>
         );
       };
 
@@ -178,18 +232,19 @@ const PokemonPage = () => {
           const imageUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonId}.png`;
 
           return (
-            <ul>
-              <li>
+            <div>
+              
                 <img
                   src={imageUrl}
                   alt={evolutionChain.chain.species.name}
+                  width={150} height={150}
                 />
                 {evolutionChain.chain.species.name}
                 {evolutionChain.chain.evolves_to.length > 0 && (
                   <ul>{evolutionChain.chain.evolves_to.map(renderEvolution)}</ul>
                 )}
-              </li>
-            </ul>
+              </div>
+            
           );
         } else {
           return null;
@@ -198,7 +253,7 @@ const PokemonPage = () => {
 
       return (
         <div>
-          <Typography variant="body1">Evolution Chain:</Typography>
+          <Typography variant="h4">Evolution Chain:</Typography>
           {renderChain(chain)}
         </div>
       );
@@ -209,63 +264,58 @@ const PokemonPage = () => {
 
   return (
     <Container>
-      <Box
-        mt={4}
-        mb={4}
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-      >
+      <Box mt={4} mb={4}>
         <Breadcrumbs>
           <Link href="/" passHref>
             <Typography component="a">Home</Typography>
           </Link>
-          <Typography>Pokémon</Typography>
+          <Typography variant="h4">Pokémon</Typography>
         </Breadcrumbs>
-        <div style={{ marginTop: "2rem" }}>
-          {pokemon && (
-            <Paper>
-              <Box
-                p={2}
-                display="flex"
-                flexDirection="column"
-                alignItems="center"
-              >
-                <Typography variant="body1">ID: {pokemon.id}</Typography>
-                <Typography variant="h4">{pokemon.name}</Typography>
-                <img
-                  src={pokemon.sprites.front_default}
-                  alt={pokemon.name}
-                  style={{ marginBottom: "1rem" }}
-                />
-                <Typography variant="body1">Types:</Typography>
-                <ul>
-                  {pokemon.types.map((type) => (
-                    <li key={type.type.name}>{type.type.name}</li>
-                  ))}
-                </ul>
-              </Box>
-            </Paper>
-          )}
-        </div>
-        <div style={{ marginTop: "1rem", width: "100%" }}>
-          <Paper>
-            <Tabs
-              value={selectedTab}
-              onChange={handleTabChange}
-              indicatorColor="primary"
-              textColor="primary"
-              variant="fullWidth"
-            >
-              <Tab label="Evolution Chain" />
-              <Tab label="Species" />
-              <Tab label="Moves" />
-              <Tab label="Stats" />
-            </Tabs>
-            <Box p={2}>{renderPokemonInfo()}</Box>
-          </Paper>
-        </div>
       </Box>
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+           <Paper className={`rounded-card  small-card-content box-shadow`}>
+           <Box p={2} display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+              {pokemon && (
+                <>
+                <div className={`card-header  ${getBackgroundColorClass(pokemon)}`} style={{ width: "100%",display: "flex", justifyContent: "center"}}>
+                  <Typography variant="h4"style={{color:"white"}}>#{pokemon.id}</Typography>
+                  <Typography variant="h4">{pokemon.name}</Typography>
+                
+                 <img
+                    src={pokemon.sprites.other['official-artwork'].front_default}
+                    alt={pokemon.name}
+                    style={{ marginBottom: "1rem", width: "300px", height: "300px", marginTop: "4rem"}}
+                    
+                  />
+                  
+                  <Typography variant="h4">Types:</Typography>
+                  
+                    {pokemon.types.map((type) => (
+                      <li key={type.type.name}>{type.type.name}</li>
+                    ))}
+                  </div>
+                </>
+                
+              )}
+              
+              <Tabs
+                value={selectedTab}
+                onChange={handleTabChange}
+                indicatorColor="primary"
+                textColor="primary"
+                variant="fullWidth"
+              >
+                <Tab label="Evolution Chain" />
+                <Tab label="Species" />
+                <Tab label="Moves" />
+                <Tab label="Stats" />
+              </Tabs>
+              <Box p={2}>{renderPokemonInfo()}</Box>
+            </Box>
+          </Paper>
+        </Grid>
+      </Grid>
     </Container>
   );
 };
