@@ -93,8 +93,16 @@ export default function PokemonList(props: PokemonListProps) {
               label="Search"
               variant="outlined"
               onChange={handleFilterChange}
+              className="search-field"style={{
+                width: "30%", 
+                marginBottom: "30px",
+                boxShadow: "10px 10px 10px rgba(0, 0, 0, 0.2)",
+                
+               
+              }}
             />
           </Box>
+
           <Box sx={{ mb: 2 }}>
             <Grid container spacing={2}>
               {filteredPokemonList?.results.map((pokemon) => (
