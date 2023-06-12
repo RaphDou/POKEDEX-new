@@ -177,7 +177,7 @@ const PokemonPage = () => {
           );
         case 2:
           return (
-            <Box>
+            <Box className="moves-section">
               {/* Afficher les mouvements du Pokémon ici */}
               <Typography variant="h4">Moves:</Typography>
               <ul>
