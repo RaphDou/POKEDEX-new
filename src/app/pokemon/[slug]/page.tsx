@@ -217,7 +217,8 @@ const PokemonPage = () => {
 
         return (
            <div key={evolution.species.name}>
-            <img src={imageUrl} alt={evolution.species.name} />
+            <img src={imageUrl} alt={evolution.species.name}
+            className="pokemon-image"  />
             {evolution.species.name}
             {evolution.evolves_to.length > 0 && (
              <div> {evolution.evolves_to.map(renderEvolution)}</div>
@@ -238,6 +239,7 @@ const PokemonPage = () => {
                   src={imageUrl}
                   alt={evolutionChain.chain.species.name}
                   width={150} height={150}
+                  
                 />
                 {evolutionChain.chain.species.name}
                 {evolutionChain.chain.evolves_to.length > 0 && (
