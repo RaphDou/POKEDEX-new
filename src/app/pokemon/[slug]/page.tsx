@@ -177,7 +177,7 @@ const PokemonPage = () => {
           );
         case 2:
           return (
-            <Box>
+            <Box className="moves-section">
               {/* Afficher les mouvements du Pokémon ici */}
               <Typography variant="h4">Moves:</Typography>
               <ul>
@@ -216,9 +216,12 @@ const PokemonPage = () => {
         const imageUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonId}.png`;
 
         return (
+          
            <div key={evolution.species.name}>
-            <img src={imageUrl} alt={evolution.species.name} />
+            <img src={imageUrl} alt={evolution.species.name}
+            className="pokemon-image"  />
             {evolution.species.name}
+            <li className="no-bullets"></li>
             {evolution.evolves_to.length > 0 && (
              <div> {evolution.evolves_to.map(renderEvolution)}</div>
             )}
@@ -232,12 +235,13 @@ const PokemonPage = () => {
           const imageUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonId}.png`;
 
           return (
-            <div>
+            <div className="evolution">
               
                 <img
                   src={imageUrl}
                   alt={evolutionChain.chain.species.name}
                   width={150} height={150}
+                  
                 />
                 {evolutionChain.chain.species.name}
                 {evolutionChain.chain.evolves_to.length > 0 && (
@@ -253,7 +257,7 @@ const PokemonPage = () => {
 
       return (
         <div>
-          <Typography variant="h4">Evolution Chain:</Typography>
+          <Typography variant="h4" style={{ textAlign: 'center'}}>Evolution Chain:</Typography>
           {renderChain(chain)}
         </div>
       );
