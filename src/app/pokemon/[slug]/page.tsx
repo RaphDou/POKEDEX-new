@@ -12,7 +12,7 @@ import {
   Paper,
 } from "@mui/material";
 import Link from "next/link";
-import "./pokemonPage.css"; 
+import "./pokemonPage.css";
 
 interface Pokemon {
   id: number;
@@ -64,53 +64,52 @@ interface EvolutionChain {
     evolves_to: EvolutionChain[];
   };
 }
+
 const getBackgroundColorClass = (pokemon: Pokemon): string => {
   if (pokemon && pokemon.types.length > 0) {
-    const type = pokemon.types[0].type.name; 
+    const type = pokemon.types[0].type.name;
     switch (type) {
       case 'fire':
-        return 'fire-background'; 
+        return 'fire-background';
       case 'water':
         return 'water-background';
-        case 'grass': 
-        return 'grass-background'; 
-        case 'normal': 
+      case 'grass':
+        return 'grass-background';
+      case 'normal':
         return 'normal-background';
-        case 'fighting': 
-        return 'fighting-background'; 
-        case 'electric': 
-        return 'electric-background'; 
-        case 'ice': 
-        return 'ice-background'; 
-        case 'poison': 
-        return 'poison-background'; 
-        case 'ghost': 
-        return 'ghost-background'; 
-        case 'ground': 
-        return 'ground-background'; 
-        case 'flying': 
-        return 'flying-background'; 
-        case 'psychic': 
-        return 'psychic-background'; 
-        case 'dragon': 
-        return 'dragon-background'; 
-        case 'bug': 
-        return 'bug-background'; 
-        case 'dark': 
-        return 'dark-background'; 
-        case 'rock': 
-        return 'rock-background'; 
-        case 'steel': 
+      case 'fighting':
+        return 'fighting-background';
+      case 'electric':
+        return 'electric-background';
+      case 'ice':
+        return 'ice-background';
+      case 'poison':
+        return 'poison-background';
+      case 'ghost':
+        return 'ghost-background';
+      case 'ground':
+        return 'ground-background';
+      case 'flying':
+        return 'flying-background';
+      case 'psychic':
+        return 'psychic-background';
+      case 'dragon':
+        return 'dragon-background';
+      case 'bug':
+        return 'bug-background';
+      case 'dark':
+        return 'dark-background';
+      case 'rock':
+        return 'rock-background';
+      case 'steel':
         return 'steel-background';
-        case 'fairy': 
-        return 'fairy-background';  
-        
+      case 'fairy':
+        return 'fairy-background';
       default:
-        return 'default-background'; 
+        return 'default-background';
     }
   }
-
-  return 'default-background'; // default background c'est s'il ne trouve pas de type
+  return 'default-background'; // default background s'il ne trouve pas de type
 };
 
 const PokemonPage = () => {
@@ -119,12 +118,14 @@ const PokemonPage = () => {
     null
   );
   const [selectedTab, setSelectedTab] = useState<number>(0);
-  const [backgroundClass, setBackgroundClass] = useState<string>("default-background");
-  
+  const [backgroundClass, setBackgroundClass] = useState<string>(
+    "default-background"
+  );
+
   useEffect(() => {
     const fetchPokemon = async () => {
       try {
-        // Extract the name from the URL
+        // Extraire le nom de l'URL
         const pathname = window.location.pathname;
         const name = pathname.split("/")[2];
 
@@ -134,7 +135,7 @@ const PokemonPage = () => {
         const data = await response.json();
         setPokemon(data);
 
-        // Fetch the evolution chain
+        // Récupérer la chaîne d'évolution
         const speciesResponse = await fetch(data.species.url);
         const speciesData = await speciesResponse.json();
         const evolutionChainResponse = await fetch(
@@ -142,13 +143,12 @@ const PokemonPage = () => {
         );
         const evolutionChainData = await evolutionChainResponse.json();
         setEvolutionChain(evolutionChainData);
-        setBackgroundClass(getBackgroundColorClass(data)); // Mise à jour de la classe CSS du fond en fonction du type de Pokémon
+        setBackgroundClass(getBackgroundColorClass(data)); // Mettre à jour la classe CSS du fond en fonction du type de Pokémon
       } catch (error) {
         console.log(error);
       }
     };
 
-    
     fetchPokemon();
   }, []);
 
@@ -163,7 +163,7 @@ const PokemonPage = () => {
           return (
             <Box>
               {evolutionChain && renderEvolutionChain(evolutionChain)}
-              </Box>
+            </Box>
           );
         case 1:
           return (
@@ -172,7 +172,11 @@ const PokemonPage = () => {
               <Typography variant="h4">
                 Species: {pokemon.species.name}
               </Typography>
-              <Typography variant="h4" component="ul" style={{ listStyleType: "none" }}></Typography>
+              <Typography
+                variant="h4"
+                component="ul"
+                style={{ listStyleType: "none" }}
+              ></Typography>
             </Box>
           );
         case 2:
@@ -194,11 +198,10 @@ const PokemonPage = () => {
               <Typography variant="h4">Height: {pokemon.height}</Typography>
               <Typography variant="h4">Weight: {pokemon.weight}</Typography>
               <Typography variant="h4">Abilities:</Typography>
-              
-                {pokemon.abilities.map((ability) => (
-                  <li key={ability.ability.name}>{ability.ability.name}</li>
-                ))}
-            
+
+              {pokemon.abilities.map((ability) => (
+                <li key={ability.ability.name}>{ability.ability.name}</li>
+              ))}
             </Box>
           );
         default:
@@ -216,14 +219,16 @@ const PokemonPage = () => {
         const imageUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonId}.png`;
 
         return (
-          
-           <div key={evolution.species.name}>
-            <img src={imageUrl} alt={evolution.species.name}
-            className="pokemon-image"  />
+          <div key={evolution.species.name}>
+            <img
+              src={imageUrl}
+              alt={evolution.species.name}
+              className="pokemon-image"
+            />
             {evolution.species.name}
             <li className="no-bullets"></li>
             {evolution.evolves_to.length > 0 && (
-             <div> {evolution.evolves_to.map(renderEvolution)}</div>
+              <div> {evolution.evolves_to.map(renderEvolution)}</div>
             )}
           </div>
         );
@@ -236,19 +241,17 @@ const PokemonPage = () => {
 
           return (
             <div className="evolution">
-              
-                <img
-                  src={imageUrl}
-                  alt={evolutionChain.chain.species.name}
-                  width={150} height={150}
-                  
-                />
-                {evolutionChain.chain.species.name}
-                {evolutionChain.chain.evolves_to.length > 0 && (
-                  <ul>{evolutionChain.chain.evolves_to.map(renderEvolution)}</ul>
-                )}
-              </div>
-            
+              <img
+                src={imageUrl}
+                alt={evolutionChain.chain.species.name}
+                width={150}
+                height={150}
+              />
+              {evolutionChain.chain.species.name}
+              {evolutionChain.chain.evolves_to.length > 0 && (
+                <ul>{evolutionChain.chain.evolves_to.map(renderEvolution)}</ul>
+              )}
+            </div>
           );
         } else {
           return null;
@@ -257,7 +260,9 @@ const PokemonPage = () => {
 
       return (
         <div>
-          <Typography variant="h4" style={{ textAlign: 'center'}}>Evolution Chain:</Typography>
+          <Typography variant="h4" style={{ textAlign: "center" }}>
+            Evolution Chain:
+          </Typography>
           {renderChain(chain)}
         </div>
       );
@@ -278,31 +283,53 @@ const PokemonPage = () => {
       </Box>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-           <Paper className={`rounded-card  small-card-content box-shadow`}>
-           <Box p={2} display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+          <Paper
+            className={`rounded-card  small-card-content box-shadow ${backgroundClass}`}
+          >
+            <Box
+              p={2}
+              display="flex"
+              flexDirection="column"
+              alignItems="center"
+              justifyContent="center"
+            >
               {pokemon && (
                 <>
-                <div className={`card-header  ${getBackgroundColorClass(pokemon)}`} style={{ width: "100%",display: "flex", justifyContent: "center"}}>
-                  <Typography variant="h4"style={{color:"white"}}>#{pokemon.id}</Typography>
-                  <Typography variant="h4">{pokemon.name}</Typography>
-                
-                 <img
-                    src={pokemon.sprites.other['official-artwork'].front_default}
-                    alt={pokemon.name}
-                    style={{ marginBottom: "1rem", width: "300px", height: "300px", marginTop: "4rem"}}
-                    
-                  />
-                  
-                  <Typography variant="h4">Types:</Typography>
-                  
+                  <div
+                    className={`card-header ${getBackgroundColorClass(
+                      pokemon
+                    )}`}
+                    style={{
+                      width: "100%",
+                      display: "flex",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Typography variant="h4" style={{ color: "white" }}>
+                      #{pokemon.id}
+                    </Typography>
+                    <Typography variant="h4">{pokemon.name}</Typography>
+
+                    <img
+                      src={pokemon.sprites.other["official-artwork"].front_default}
+                      alt={pokemon.name}
+                      style={{
+                        marginBottom: "1rem",
+                        width: "300px",
+                        height: "300px",
+                        marginTop: "4rem",
+                      }}
+                    />
+
+                    <Typography variant="h4">Types:</Typography>
+
                     {pokemon.types.map((type) => (
                       <li key={type.type.name}>{type.type.name}</li>
                     ))}
                   </div>
                 </>
-                
               )}
-              
+
               <Tabs
                 value={selectedTab}
                 onChange={handleTabChange}
